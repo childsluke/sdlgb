@@ -26,5 +26,8 @@
     <ClInclude Include="gameboy.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\SDL.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
