@@ -1,0 +1,40 @@
+
+CPU NOTES
+
+- Monochrome Display (4 green color variants can be displayed)
+
+- Dot Matrix Game CPU (DMG)
+
+- Zylog Z80 (customized) - 4.16Mhz
+- 8KB WORK RAM
+- 8KB VRAM
+- 4-channel sound generator
+- PPU (picture processing unit)
+- 8-bit CPU wit 16-bit memory address space
+  what can be stored in each position(0 to 256)
+  memory positions(0 to 65536)
+
+  - 10 registers (ABCDEFHL   SPPC)
+				  (8-bit)  (16-bit)
+
+- Register A (accumulator - most math operations only done on this
+
+- CPU instruction list...consisting of text label + operator
+ (text labels are converted to numbers & stored on cartridge)
+ (instructions read from cartridge by CPU and executed in order)
+
+
+ e.g      LD			A, B
+    (load function)   (copy B register value to A register)
+	
+		ADD				A, 27
+	 (add)			(register, number/register/memloc)
+
+	    JP				NZ, 8000H
+	  (jump)		(comparison [not zero], address to jump to if true)
+
+	  HALT
+	  (pauses screen until next refresh or other timer wakeup)
+
+  char* workRam [8192]
+  char* vRam [8192]

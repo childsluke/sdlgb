@@ -26,6 +26,9 @@
     <ClInclude Include="gameboy.h" />
     <ClInclude Include="include\SDL.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="NOTES.txt" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <ProjectGuid>{9F9B963F-8BF5-4A1F-99CB-396CDFABC206}</ProjectGuid>
