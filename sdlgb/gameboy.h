@@ -15,11 +15,11 @@ namespace gameboy
 	private:
 
 		// Registers
-		unsigned char* A, B, C, D, E, F, H, L;
-		unsigned short* SP, PC; // Stack pointer & program counter
+		unsigned char* rA_, rB_, rC_, rD_, rE_, rF_, rH_, rL_;
+		unsigned short* SP_, PC_; // Stack pointer & program counter
 
 		// Flag registers
-		bool Z, N, H, CY;
+		bool fZ_, fN_, fH_, fCY_;
 
 	public:
 		GbCpu();
@@ -30,33 +30,34 @@ namespace gameboy
 	class GbMem
 	{
 	private:
-		unsigned char* ram[65536];
-		unsigned char* rstInterrupts; // 256 bytes
-		unsigned char* romArea;		// 80 bytes
-		unsigned char* userProgram;	// Starts at 0x150...
-		unsigned char* workRam; // Starts at 0xC000 (8K)
+		unsigned char* ram_;				// 64K
+		unsigned char* rstInterrupts_; // 256 bytes
+		unsigned char* romArea_;		// 80 bytes
+		unsigned char* userProgram_;	// Starts at 0x150...
+		unsigned char* workRam_; // Starts at 0xC000 (8K)
 
-		bool sound1, sound2, sound3, sound4;
+		bool sound1_, sound2_, sound3_, sound4_;
 
 		// Defining memory ranges (to help our pointers later)
-		const short END_OF_PROG_AREA = 0x7FF;
-		const short END_OF_RST_AND_INTERRUPTS = 0x0FF;
-		const short START_OF_ROM_DATA = 0x100;
-		const short END_OF_ROM_DATA = 0x14F;
-		const short START_OF_USER_PROG = 0x150;
+		const unsigned short END_OF_PROG_AREA = 0x7FF;
+		const unsigned short END_OF_RST_AND_INTERRUPTS = 0x0FF;
+		const unsigned short START_OF_ROM_DATA = 0x100;
+		const unsigned short END_OF_ROM_DATA = 0x14F;
+		const unsigned short START_OF_USER_PROG = 0x150;
 
-		const short START_OF_VRAM = 0x8000;
-		const short END_OF_VRAM = 0x9FFF;
+		const unsigned short START_OF_VRAM = 0x8000;
+		const unsigned short END_OF_VRAM = 0x9FFF;
 
 		// External expansion RAM area
-		const short START_OF_EE_RAM = 0xA000;
-		const short END_OF_EE_RAM = 0xBFFF;
+		const unsigned short START_OF_EE_RAM = 0xA000;
+		const unsigned short END_OF_EE_RAM = 0xBFFF;
 
-		const short START_OF_WORK_RAM = 0xC000;
-		const short END_OF_WORK_RAM = 0xDFFF;
+		const unsigned short START_OF_WORK_RAM = 0xC000;
+		const unsigned short END_OF_WORK_RAM = 0xDFFF;
 
 	public:
 		
+		~GbMem();
 		GbMem();
 		void clear();
 
@@ -68,11 +69,12 @@ namespace gameboy
 		bool poweredOn_;
 		char* keys;
 
-		GbCpu gameboyCpu_;
-		GbMem gameboyMem_;
+		GbCpu* gameboyCpu_;
+		GbMem* gameboyMem_;
 
 	public:
 		Gameboy();
+		~Gameboy();
 		bool insertGame(const char* filePath);
 		void ejectGame();
 		void togglePower();

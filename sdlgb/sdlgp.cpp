@@ -49,7 +49,7 @@ bool loadMedia(const char* filePath, SDL_Renderer** sdlRenderer, SDL_Texture** s
 	SDL_Surface* surface = IMG_Load(filePath);
 	*sdlTexture = SDL_CreateTextureFromSurface(*sdlRenderer, surface);
 	
-	if ((*sdlTexture == nullptr) || (surface = nullptr))
+	if ((*sdlTexture == nullptr) || (surface == nullptr))
 	{
 		cout << "Image loading error - " << SDL_GetError() << endl;
 		return false;
@@ -89,7 +89,7 @@ int main(int argc, char* argv[])
 		SDL_RenderClear(gameRenderer);
 		SDL_SetRenderDrawColor(gameRenderer, 0xff, 0xff, 0xff, 0xff);
 		SDL_RenderCopy(gameRenderer, gameboyBackground, nullptr, nullptr);
-		//SDL_SetRenderDrawColor(gameRenderer, 0x9b, 0xbc, 0x0f, 0xff);
+		SDL_SetRenderDrawColor(gameRenderer, 0x9b, 0xbc, 0x0f, 0xff);
 		SDL_RenderFillRect(gameRenderer, &gameboyScreenArea);
 		
 		SDL_Event e;

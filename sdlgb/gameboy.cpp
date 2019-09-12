@@ -12,8 +12,13 @@ GbCpu::GbCpu()
 
 GbMem::GbMem()
 	{
-		sizeInBytes_ = 0;
+	ram_ = new unsigned char[65536];
 	}
+
+GbMem::~GbMem()
+{
+	delete ram_;
+}
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
@@ -21,7 +26,15 @@ Gameboy::Gameboy()
 	{
 		poweredOn_ = false;
 		keys = nullptr;
+
+		gameboyMem_ =  new GbMem();
 	}
+
+Gameboy::~Gameboy()
+{
+	delete gameboyMem_;
+	delete gameboyCpu_;
+}
 
 void Gameboy::togglePower()
 	{
