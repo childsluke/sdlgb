@@ -7,19 +7,105 @@
 #ifndef GAMEBOY_H
 #define GAMEBOY_H
 
+#include <vector>
+
 namespace gameboy
 {
 
 	class GbCpu
 	{
+		friend class Gameboy;
+		friend class GbMem;
+
 	private:
 
-		// Registers
-		unsigned char* rA_, rB_, rC_, rD_, rE_, rF_, rH_, rL_;
-		unsigned short* SP_, PC_; // Stack pointer & program counter
+		// Registers	
+
+		// Per programming manual codes, registers are referenced via 0-7 3 bits in opcodes
+		const char REGISTER_A = 0b111;
+		const char REGISTER_B = 0b000;
+		const char REGISTER_C = 0b001;
+		const char REGISTER_D = 0b010;
+		const char REGISTER_E = 0b011;
+		const char REGISTER_H = 0b100;
+		const char REGISTER_L = 0b101;
+		
+		
+		union Register
+		{
+			Register();
+			Register(unsigned short initValue);
+			unsigned short reg;
+			struct
+			{
+				unsigned char lo;
+				unsigned char hi;
+			};
+		};
+
+		Register rAF_, rBC_, rDE_, rHL_;
+		unsigned char* rA_, * rF_, * rB_, * rC_, * rD_, * rE_, * rH_, * rL_;
+		
+		unsigned short *SP_, *PC_; // Stack pointer & program counter
 
 		// Flag registers
-		bool fZ_, fN_, fH_, fCY_;
+		// (We will read in the upper 4 bits of the F register into these bools as our flags on each cycle)
+		bool fC4_, fH5_, fN6_, fZ7_;
+		// Bit 4 C, Bit 5, H, Bit 6 N, Bit 7 Z;
+
+		bool imeFlag_;
+
+		// Stack functions - stack grows from TOP TO BOTTOM on the Game Boy!
+		const unsigned short END_STACK_LOCATION = 0xFF80;
+		const unsigned short START_STACK_LOCATION = 0xFFFE;
+		void push(unsigned char byteToPush);
+		void pop();
+
+		// To 'simulate' CPU cycles needed to complete operation
+		int waitCounter_ = 0;
+
+		// Opcode processes (Chapter 4, Page 94 of GB Prog Manual)
+		// REMEMBER THAT THE GAMEBOY CPU IS LITTLE-ENDIAN! (ie LSB first when bytes are side-by-side in memory)
+		
+		// Loads
+		inline void LDrr(char regNoIn, char regNoOut);
+		
+		// Jumps
+		inline void JPnn(unsigned short nn);
+		inline void JPHL();
+		inline void JPccnn(unsigned char LSBnn, unsigned char MSBnn, unsigned char cc);
+		
+		// Relative jumps
+		inline void JRr(unsigned char offset);
+		inline void JRccr(unsigned char offset, unsigned char cc);
+
+		// Function calls
+		inline void callnn(unsigned char LSBnn, unsigned char MSBnn);
+		inline void callccnn(unsigned char LSBnn, unsigned char MSBnn, unsigned char cc);
+
+		// Returns
+		inline void ret();
+		inline void retcc(unsigned char cc);
+		inline void reti();
+
+		inline void rstn(unsigned char n);
+
+		// Miscellaneous
+		inline void halt();
+		inline void stop();
+		inline void di();
+		inline void ei();
+		inline void ccf();
+		inline void scf();
+		inline void nop();
+		inline void daa();
+		inline void cpl();
+
+		// Load in the bootstrap code
+		void loadBootstrap(const char* filePath);
+
+		// Load in cartridge data
+		void loadCartridgeData(const char* filePath);
 
 	public:
 		GbCpu();
@@ -29,6 +115,9 @@ namespace gameboy
 
 	class GbMem
 	{
+		friend class GpCpu;
+		friend class Gameboy;
+
 	private:
 		unsigned char* ram_;				// 64K
 		unsigned char* rstInterrupts_; // 256 bytes
@@ -67,7 +156,7 @@ namespace gameboy
 	{
 	private:
 		bool poweredOn_;
-		char* keys;
+		char* keys_;
 
 		GbCpu* gameboyCpu_;
 		GbMem* gameboyMem_;
@@ -78,6 +167,7 @@ namespace gameboy
 		bool insertGame(const char* filePath);
 		void ejectGame();
 		void togglePower();
+		void cycleCpu();
 		void reset();
 	};
 

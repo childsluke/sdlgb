@@ -91,6 +91,9 @@ int main(int argc, char* argv[])
 		SDL_RenderCopy(gameRenderer, gameboyBackground, nullptr, nullptr);
 		SDL_SetRenderDrawColor(gameRenderer, 0x9b, 0xbc, 0x0f, 0xff);
 		SDL_RenderFillRect(gameRenderer, &gameboyScreenArea);
+
+		// Emulation cycle
+		gameboy.cycleCpu();
 		
 		SDL_Event e;
 		while (SDL_PollEvent(&e))
